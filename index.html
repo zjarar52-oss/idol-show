@@ -61,6 +61,62 @@
             color: #a08060;
         }
 
+        /* Tab切换 */
+        .tab-nav {
+            display: flex;
+            justify-content: center;
+            gap: 0;
+            margin-bottom: 12px;
+            background: rgba(255,255,255,0.95);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(139, 90, 43, 0.05);
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 10px 20px;
+            border: none;
+            background: transparent;
+            font-size: 13px;
+            font-weight: 500;
+            color: #8b6b4a;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn:hover {
+            background: rgba(212, 165, 116, 0.1);
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, #d4a574 0%, #c4956a 100%);
+            color: #fff;
+        }
+
+        .page-content {
+            display: none;
+        }
+
+        .page-content.active {
+            display: block;
+        }
+
+        /* 表情包工具页面 */
+        .meme-tool-container {
+            width: 100%;
+            min-height: 600px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(139, 90, 43, 0.08);
+        }
+
+        .meme-tool-container iframe {
+            width: 100%;
+            height: 600px;
+            border: none;
+        }
+
         /* Banner */
         .banner-section {
             margin: 12px 0;
@@ -100,6 +156,14 @@
         .banner-desc {
             font-size: 11px;
             color: rgba(255,255,255,0.85);
+        }
+
+        .banner-credit {
+            text-align: center;
+            font-size: 10px;
+            color: #b8a090;
+            margin-top: 4px;
+            margin-bottom: 8px;
         }
 
         .banner-controls {
@@ -143,6 +207,18 @@
             margin-bottom: 8px;
             padding-left: 8px;
             border-left: 3px solid #d4a574;
+        }
+
+        .section-tip {
+            font-size: 10px;
+            color: #b8a090;
+            margin-bottom: 8px;
+            padding-left: 11px;
+        }
+
+        .meme-example {
+            text-align: center;
+            margin-bottom: 15px;
         }
 
         /* Cards Grid - 3x3 */
@@ -330,6 +406,33 @@
             font-size: 9px;
         }
 
+        /* 悬浮球 */
+        .float-ball {
+            position: fixed;
+            right: 20px;
+            bottom: 100px;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.4);
+            z-index: 999;
+            transition: all 0.3s ease;
+        }
+
+        .float-ball:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(231, 76, 60, 0.5);
+        }
+
+        .float-ball span {
+            font-size: 20px;
+        }
+
         /* Responsive */
         @media (max-width: 600px) {
             .cards-grid {
@@ -343,6 +446,7 @@
             }
         }
     </style>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 </head>
 <body>
     <div class="container">
@@ -351,12 +455,20 @@
             <h1 class="name">王楚然</h1>
             <p class="info-line">中国内地影视女演员，歌手</p>
             <div class="info-details">
-                <span class="info-item">27岁</span>
+                <span class="info-item">毕业于上海戏剧学院</span>
                 <span class="info-item">172cm</span>
                 <span class="info-item">水瓶座</span>
             </div>
         </header>
 
+        <!-- Tab切换 -->
+        <nav class="tab-nav">
+            <button class="tab-btn active" onclick="switchPage('works')">📺 作品展示</button>
+            <button class="tab-btn" onclick="switchPage('meme')">🎭 表情包工具</button>
+        </nav>
+
+        <!-- 页面1：作品展示 -->
+        <div id="page-works" class="page-content active">
         <!-- Banner - 待播作品预告 -->
         <section class="banner-section">
             <video id="bannerVideo" autoplay loop playsinline>
@@ -371,10 +483,12 @@
                 <div class="banner-desc">烽影燃梅香 · 明月录 · 这一秒过火</div>
             </div>
         </section>
+        <p class="banner-credit">视频来自饭剪素材，物料投递可联系作者（页面最下方）</p>
 
         <!-- 已播作品 -->
         <section class="section">
             <h2 class="section-title">📺 已播作品</h2>
+            <p class="section-tip">点击封面即可跳转播放~</p>
             <div class="cards-grid">
                 <!-- 成何体统 -->
                 <div class="card" onclick="window.open('https://www.iqiyi.com/v_1xghiumsit0.html', '_blank')">
@@ -582,15 +696,30 @@
 
         <!-- 解锁定制 -->
         <section class="unlock-section">
-            <h2 class="unlock-title">✨ 解锁定制你的专属爱豆页面</h2>
-            <p class="unlock-desc">付费解锁后，输入任意爱豆名字，即可生成专属安利页面！</p>
-            <a href="#" class="unlock-btn" onclick="alert('付费功能开发中，敬请期待！'); return false;">立即解锁</a>
+            <h2 class="unlock-title">✨ 定制新功能 / 给作者加鸡腿</h2>
+            <p class="unlock-desc">有新功能or其他建议？欢迎反馈！</p>
+            <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+                <a href="#" class="unlock-btn" onclick="alert('功能开发中，敬请期待！'); return false;">定制新功能</a>
+                <a href="#" class="unlock-btn" onclick="alert('联系邮箱：contactarrow@qq.com'); return false;">联系作者</a>
+            </div>
         </section>
 
         <!-- Footer -->
         <footer class="footer">
             <p>© 2026 爱豆安利站 | 仅供粉丝交流使用</p>
         </footer>
+        </div>
+
+        <!-- 页面2：表情包工具 -->
+        <div id="page-meme" class="page-content">
+            <h2 class="section-title" style="margin-bottom: 10px;">🎭 生成表情包效果示例</h2>
+            <div class="meme-example">
+                <img src="posters/表情包效果示例.jpg" alt="表情包效果示例" style="width: 100%; max-width: 400px; border-radius: 12px; box-shadow: 0 4px 15px rgba(139, 90, 43, 0.1);">
+            </div>
+            <div class="meme-tool-container">
+                <iframe src="https://app-94sajw3mcge9.appmiaoda.com" allowfullscreen></iframe>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -612,6 +741,56 @@
             video.muted = !video.muted;
             muteBtn.textContent = video.muted ? '🔇' : '🔊';
         }
+
+        // 页面切换
+        function switchPage(page) {
+            // 切换按钮状态
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // 切换页面内容
+            document.querySelectorAll('.page-content').forEach(p => p.classList.remove('active'));
+            document.getElementById('page-' + page).classList.add('active');
+        }
+
+        // 一键截图
+        function takeScreenshot() {
+            const floatBall = document.querySelector('.float-ball');
+            const originalHTML = floatBall.innerHTML;
+            floatBall.innerHTML = '<span>⏳</span>';
+            
+            // 截取作品展示页面
+            const targetElement = document.getElementById('page-works');
+            
+            html2canvas(targetElement, {
+                scale: 2,
+                useCORS: true,
+                allowTaint: true,
+                backgroundColor: '#fef9f6',
+                logging: false
+            }).then(function(canvas) {
+                // 创建下载链接
+                const link = document.createElement('a');
+                link.download = '王楚然-作品安利.png';
+                link.href = canvas.toDataURL('image/png');
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                // 恢复按钮
+                floatBall.innerHTML = originalHTML;
+                alert('截图已保存到下载文件夹！');
+            }).catch(function(err) {
+                floatBall.innerHTML = originalHTML;
+                alert('截图失败：' + err.message);
+                console.error('截图错误:', err);
+            });
+        }
     </script>
+
+    <!-- 悬浮球 - 一键截图 -->
+    <div class="float-ball" onclick="takeScreenshot()" title="一键截图">
+        <span>📸</span>
+    </div>
 </body>
 </html>
